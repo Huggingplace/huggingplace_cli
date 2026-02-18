@@ -1,22 +1,128 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeChatCommand = void 0;
 const commander_1 = require("commander");
+const axios_1 = __importDefault(require("axios"));
+const config_1 = require("./config");
+const DEFAULT_BASE_URL = "https://api.huggingplace.com";
 const makeChatCommand = () => {
-    const chat = new commander_1.Command('chat')
-        .description('Interact with a chat endpoint.');
+    const chat = new commander_1.Command("chat").description("Interact with a chat endpoint and view logs.");
     chat
-        .command('start')
-        .description('Start a conversation and get the context payload.')
-        .argument('<chat_id>', 'ID of the chat')
-        .option('-p, --prompt <prompt>', 'The user prompt')
+        .command("start")
+        .description("Start a conversation and get the context payload.")
+        .argument("<chat_id>", "ID of the chat")
+        .option("-p, --prompt <prompt>", "The user prompt")
         .action((chat_id, options) => console.log(`Starting chat ${chat_id} with prompt: "${options.prompt}"`));
     chat
-        .command('save')
-        .description('Save the final results of a conversation from a JSON file.')
-        .argument('<chat_id>', 'ID of the chat')
-        .option('-f, --file <file_path>', 'Path to the JSON results file')
+        .command("save")
+        .description("Save the final results of a conversation from a JSON file.")
+        .argument("<chat_id>", "ID of the chat")
+        .option("-f, --file <file_path>", "Path to the JSON results file")
         .action((chat_id, options) => console.log(`Saving results for chat ${chat_id} from file: ${options.file}`));
+    chat
+        .command("logs")
+        .description("Pull down chat logs with filter criteria.")
+        .option("--org <org>", "Organization name (required for filtering)", "All")
+        .option("--search <query>", "Search for content within chats")
+        .option("--limit <number>", "Limit the number of results", "10")
+        .option("--page <number>", "Page number", "1")
+        .option("--order-by <field>", "Field to order by (e.g., created)", "created")
+        .option("--order-direction <direction>", "Order direction (asc or desc)", "desc")
+        .option("--start-date <date>", "Start date (YYYY-MM-DD)")
+        .option("--end-date <date>", "End date (YYYY-MM-DD)")
+        .option("--pipeline-id <id>", "Filter by Notebook/Pipeline ID")
+        .option("--filter <key=value>", "Dynamic filters (e.g. user_id=123). Can be used multiple times.", (val, memo) => {
+        memo.push(val);
+        return memo;
+    }, [])
+        .action(async (options) => {
+        const config = (0, config_1.readConfig)();
+        let baseUrl = config.apiUrl || DEFAULT_BASE_URL;
+        // Clean up base URL if user provided trailing slashes or /api suffix
+        if (baseUrl.endsWith("/api"))
+            baseUrl = baseUrl.slice(0, -4);
+        if (baseUrl.endsWith("/"))
+            baseUrl = baseUrl.slice(0, -1);
+        const apiKey = config.apiKey;
+        const params = {
+            org: options.org,
+            limit: options.limit,
+            page: options.page,
+            order_by: options.orderBy,
+            order_direction: options.orderDirection,
+        };
+        if (options.search)
+            params.search = options.search;
+        if (options.startDate)
+            params.start_date = options.startDate;
+        if (options.endDate)
+            params.end_date = options.endDate;
+        if (options.pipelineId)
+            params.pipelineId = options.pipelineId;
+        // Process dynamic filters
+        if (options.filter && Array.isArray(options.filter)) {
+            options.filter.forEach((f) => {
+                const parts = f.split("=");
+                if (parts.length >= 2) {
+                    const key = parts[0].trim();
+                    const value = parts.slice(1).join("=").trim();
+                    params[key] = value;
+                }
+            });
+        }
+        const endpoint = `${baseUrl}/notebook/filtered_chat`;
+        console.log(`Fetching logs from: ${endpoint}`);
+        console.log("Filter criteria:", params);
+        try {
+            const response = await axios_1.default.get(endpoint, {
+                params,
+                headers: apiKey ? { "x-api-key": apiKey } : {},
+            });
+            const data = response.data;
+            if (data && Array.isArray(data.chats)) {
+                console.log(`\nFound ${data.totalChats} logs (showing ${data.chats.length}):`);
+                if (data.chats.length > 0) {
+                    const tableData = data.chats.map((c) => ({
+                        ID: c.id,
+                        User: c.user_data?.user_name || "Unknown",
+                        Prompt: c.conversation
+                            ? c.conversation.length > 40
+                                ? c.conversation.substring(0, 40) + "..."
+                                : c.conversation
+                            : "",
+                        Response: c.prompt_response
+                            ? c.prompt_response.length > 40
+                                ? c.prompt_response.substring(0, 40) + "..."
+                                : c.prompt_response
+                            : "",
+                        Time: c.response_time || "N/A",
+                        Created: c.createdAt
+                            ? new Date(c.createdAt).toLocaleString()
+                            : "N/A",
+                    }));
+                    console.table(tableData);
+                }
+                else {
+                    console.log("No logs found matching criteria.");
+                }
+            }
+            else {
+                console.error("Unexpected response format:", data);
+            }
+        }
+        catch (error) {
+            console.error("Error fetching logs:", error.message);
+            if (error.response) {
+                console.error("Status:", error.response.status);
+                if (error.response.status === 401 || error.response.status === 403) {
+                    console.error("Authentication failed. Please check your API Key.");
+                }
+            }
+        }
+    });
     return chat;
 };
 exports.makeChatCommand = makeChatCommand;

@@ -4,7 +4,8 @@
   "description": "CLI for the HuggingPlace Platform",
   "main": "dist/index.js",
   "bin": {
-    "hplace": "dist/index.js"
+    "hplace": "dist/index.js",
+    "huggingplace": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",

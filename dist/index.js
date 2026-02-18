@@ -12,6 +12,7 @@ const anonymizer_1 = require("./commands/anonymizer");
 const traces_1 = require("./commands/traces");
 const chat_1 = require("./commands/chat");
 const server_1 = require("./commands/server");
+const help_llm_1 = require("./commands/help_llm");
 const program = new commander_1.Command();
 program
     .name('hplace')
@@ -28,4 +29,5 @@ program.addCommand((0, anonymizer_1.makeAnonymizerCommand)());
 program.addCommand((0, traces_1.makeTracesCommand)());
 program.addCommand((0, chat_1.makeChatCommand)());
 program.addCommand((0, server_1.makeServerCommand)());
+program.addCommand((0, help_llm_1.makeHelpLlmCommand)());
 program.parse(process.argv);

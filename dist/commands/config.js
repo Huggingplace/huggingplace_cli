@@ -28,11 +28,11 @@ const readConfig = () => {
         }
     }
     // Environment variables override config file for the API Key
-    if (process.env.BUTTRBASE_API_KEY) {
-        config.apiKey = process.env.BUTTRBASE_API_KEY;
-    }
-    else if (process.env.HUGGINGPLACE_API_KEY) {
+    if (process.env.HUGGINGPLACE_API_KEY) {
         config.apiKey = process.env.HUGGINGPLACE_API_KEY;
+    }
+    else if (process.env.BUTTRBASE_API_KEY) {
+        config.apiKey = process.env.BUTTRBASE_API_KEY;
     }
     return config;
 };
