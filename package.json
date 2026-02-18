@@ -1,0 +1,30 @@
+{
+  "name": "hplace",
+  "version": "1.0.0",
+  "description": "CLI for the HuggingPlace Platform",
+  "main": "dist/index.js",
+  "bin": {
+    "hplace": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@types/node": "^20.14.2",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.7.2",
+    "commander": "^12.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1"
+  }
+}
