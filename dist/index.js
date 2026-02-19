@@ -26,7 +26,7 @@ program
 
 LOGS & FILTERING (huggingplace chat logs):
   Required:
-    --org <name>          Organization name (e.g., --org carnegie_foundation)
+    --org <name>          Organization name (e.g., --org acme)
 
   Filters:
     --search <query>      Search text within chats
@@ -40,7 +40,7 @@ LOGS & FILTERING (huggingplace chat logs):
 
   Examples:
     # Get last 50 error logs from Feb 2024
-    huggingplace chat logs --org carnegie_foundation  --start-date 2024-02-01 --end-date 2024-02-29 --limit 50
+    huggingplace chat logs --org acme  --start-date 2024-02-01 --end-date 2024-02-29 --limit 50
 `);
 // Add commands
 program.addCommand((0, config_1.makeConfigCommand)());

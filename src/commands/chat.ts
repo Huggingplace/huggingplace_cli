@@ -58,25 +58,28 @@ export const makeChatCommand = () => {
       },
       [],
     )
-    .addHelpText('after', `
+    .addHelpText(
+      "after",
+      `
 \nEXAMPLES:
   # Basic: Pull logs for an organization
-  $ huggingplace chat logs --org carnegie_foundation
+  $ huggingplace chat logs --org acme
 
   # Date Range: Logs from Feb 1st to Feb 18th, 2024
-  $ huggingplace chat logs --org carnegie_foundation --start-date 2024-02-01 --end-date 2024-02-18
+  $ huggingplace chat logs --org acme --start-date 2024-02-01 --end-date 2024-02-18
 
   # Search & Filter: Find logs containing "error" with limit
-  $ huggingplace chat logs --org carnegie_foundation --search "error" --limit 50
+  $ huggingplace chat logs --org acme --search "error" --limit 50
 
   # Sort by specific field
-  $ huggingplace chat logs --org carnegie_foundation --order-by response_time --order-direction desc
+  $ huggingplace chat logs --org acme --order-by response_time --order-direction desc
 
 SETUP:
   Ensure your API key is set:
   $env:HUGGINGPLACE_API_KEY = "your_key" (Windows)
   export HUGGINGPLACE_API_KEY="your_key" (Linux/macOS)
-`)
+`,
+    )
     .action(async (options) => {
       const config = readConfig();
       let baseUrl = config.apiUrl || DEFAULT_BASE_URL;
