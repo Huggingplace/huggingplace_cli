@@ -39,18 +39,18 @@ To interact with the platform, you need to authenticate using your API Key. You 
 
 ### 1. Environment Variables (Recommended)
 
-Set the `BUTTRBASE_API_KEY` environment variable. This is ideal for CI/CD pipelines and avoiding manual configuration.
+Set the `HUGGINPLACE_API_KEY` environment variable. This is ideal for CI/CD pipelines and avoiding manual configuration.
 
 **Windows (PowerShell):**
 
 ```powershell
-$env:BUTTRBASE_API_KEY = "your-api-key"
+$env:HUGGINGPLACE_API_KEY = "your-api-key"
 ```
 
 **Mac/Linux:**
 
 ```bash
-export BUTTRBASE_API_KEY="your-api-key"
+export HUGGINGPLACE_API_KEY="your-api-key"
 ```
 
 ### 2. Config Command
