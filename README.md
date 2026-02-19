@@ -8,64 +8,57 @@ The HuggingPlace CLI is a powerful tool designed to help developers interact wit
 
 ## Installation
 
-### From Source (Development)
-
-1.  Navigate to the CLI directory:
-    ```bash
-    cd huggingplace-cli
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Run commands using `npm start`:
-    ```bash
-    npm start -- <command> [options]
-    ```
-
-### Global Link (Optional)
-
-To use the `hplace` command globally on your system:
-
 ```bash
+# 1. Clone the repository
+git clone <repository-url>
+
+# 2. Install and build
+npm install
 npm run build
 npm link
-hplace --help
 ```
 
-## Authentication
+---
 
-To interact with the platform, you need to authenticate using your API Key. You can set this up in two ways:
+## 🚀 Quick Start
 
-### 1. Environment Variables (Recommended)
+### 1. Setup API Key
 
-Set the `HUGGINPLACE_API_KEY` environment variable. This is ideal for CI/CD pipelines and avoiding manual configuration.
+You must set your API key as an environment variable before running commands.
 
 **Windows (PowerShell):**
 
 ```powershell
-$env:HUGGINGPLACE_API_KEY = "your-api-key"
+$env:HUGGINGPLACE_API_KEY = "your_api_key_here"
 ```
 
-**Mac/Linux:**
+**Linux / macOS:**
 
 ```bash
-export HUGGINGPLACE_API_KEY="your-api-key"
+export HUGGINGPLACE_API_KEY="your_api_key_here"
 ```
 
-### 2. Config Command
+### 2. Common Commands
 
-Manually save your API key to the local configuration file:
+#### Pull Logs for an Organization
 
 ```bash
-npm start -- config set --api-key "your-api-key"
+huggingplace chat logs --org your_organization_name
 ```
 
-Verify your configuration:
+#### Filter by Date Range (format: YYYY-MM-DD)
 
 ```bash
-npm start -- config show
+huggingplace chat logs --org your_organization_name --start-date 2024-02-01 --end-date 2024-02-18
 ```
+
+#### Search Logs
+
+```bash
+huggingplace chat logs --org your_organization_name --search "error" --limit 50
+```
+
+---
 
 ## Key Features
 
@@ -73,36 +66,28 @@ npm start -- config show
 
 Retrieve and analyze chat logs directly from the platform. Supports advanced filtering to find exactly what you need.
 
-**Command:** `chat logs`
+**Command:** `huggingplace chat logs`
 
 **Options:**
 
-- `--org <name>`: **(Required)** Filter by Organization name.
+- `--org <name>`: **(Required)** Filter by Organization name (e.g., `acme`).
 - `--search <text>`: Search for specific text within conversations.
 - `--start-date <YYYY-MM-DD>`: Filter logs from this date.
 - `--end-date <YYYY-MM-DD>`: Filter logs up to this date.
-- `--pipeline-id <id>`: Filter by specific Notebook/Pipeline ID.
-- `--filter <key=value>`: Apply dynamic filters (e.g., `user_id=123`, `email=bob@example.com`).
 - `--limit <number>`: Limit results (default: 10).
+- `--page <number>`: Page number for pagination.
 - `--order-by <field>`: Sort field (default: `created`).
-
-**Example:**
-
-```bash
-npm start -- chat logs --org "AcmeCorp" --filter user_id=42 --limit 5
-```
+- `--order-direction <asc|desc>`: Sort direction (default: `desc`).
+- `--pipeline-id <id>`: Filter by specific Notebook/Pipeline ID.
+- `--filter <key=value>`: Apply dynamic filters (e.g., `user_id=123`).
 
 ### 🤖 AI Assistance
 
-Stuck? Ask the built-in AI assistant for help with CLI commands or development tasks.
+Stuck? Get help directly from the CLI.
 
-**Command:** `help-llm`
+**Command:** `huggingplace help-llm`
 
-**Example:**
-
-```bash
-npm start -- help-llm "How do I create a new collection?"
-```
+---
 
 ## Command Reference
 
@@ -130,10 +115,7 @@ npm start -- help-llm "How do I create a new collection?"
 ### Pipelines
 
 - `pipelines list`: List prompt pipelines.
-- `pipelines create`: Create a pipeline from JSON.
 - `pipelines get <id>`: Get pipeline details.
-- `pipelines add-test-case <id>`: Add a test case.
-- `pipelines run <id>`: Execute a pipeline.
 
 ### Evaluations
 
@@ -157,10 +139,3 @@ npm start -- help-llm "How do I create a new collection?"
 ### Server
 
 - `server start`: Start the CLI as a local WebSocket server (default port: 8080).
-
-## Contributing
-
-1.  Clone the repository.
-2.  Run `npm install`.
-3.  Make changes in `src/`.
-4.  Test with `npm start -- <command>`.
